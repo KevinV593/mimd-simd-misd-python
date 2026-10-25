@@ -1,5 +1,6 @@
 # Arquitecturas MIMD, SIMD y MISD con Python
 
+<<<<<<< HEAD
 Proyecto de Computación Paralela
 
 opción 4
@@ -8,3 +9,6 @@ Presentación del tema
 Fórmulas
 Objetivo del proyecto
 Dashboard
+=======
+Proyecto de Computación Paralela
+>>>>>>> 5b2e4e6 (funciona)
