@@ -19,7 +19,6 @@ if __name__ == "__main__":
     
     try:
         conexion = conectar_mysql()
-        
         if conexion.is_connected():
             print(f"Conexión Exitosa a: {BASE_DATOS}")
         
