@@ -57,4 +57,5 @@ urea_mmol_l = urea_mg_dl / 6.006;
 
 
 ## Base de Datos
-![inspiracion](image.png)
+Ver: [dataset_funcion_renal.csv](dataset_funcion_renal.csv)
+
