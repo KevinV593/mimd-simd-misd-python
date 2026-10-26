@@ -19,11 +19,10 @@ Ecuación de creatinina CKD-EPI (2021): https://www.kidney.org/es/ecuacion-de-cr
 #### Fórmula:
 
 Calcular la taza de filtración glomerular (eGFR, por sus siglas en inglés) =
-142
-* min(Scr/K estandarizado, 1)α *
-max(Scr/K estandarizado, 1) - 1.200 *
-0.9938 × Edad
-* 1.012 [si es mujer]
+142 * min(Scr/K estandarizado, 1)α * max(Scr/K estandarizado, 1) - 1.200 * 0.9938 × Edad * 1.012 [si es mujer]
+
+K = 0.7 (mujeres) o 0.9 (hombres)
+α = -0.241 (mujeres) o -0.302 (hombres)
 
 Ecuación pediátrica bedside Schwartz
 \[
@@ -59,3 +58,6 @@ urea_mmol_l = urea_mg_dl / 6.006;
 ## Base de Datos
 Ver: [dataset_funcion_renal.csv](dataset_funcion_renal.csv)
 
+
+# EJECTUAR
+python mimd.py > salida_mimd.txt

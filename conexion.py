@@ -16,7 +16,8 @@ def conectar_mysql():
 # PROGRAMA
 if __name__ == "__main__":
     conexion = None
-    
+
+# VALIDACIÓN
     try:
         conexion = conectar_mysql()
         if conexion.is_connected():
