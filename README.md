@@ -61,3 +61,8 @@ Ver: [dataset_funcion_renal.csv](dataset_funcion_renal.csv)
 
 # EJECTUAR
 python mimd.py > salida_mimd.txt
+sudo /opt/lampp/lampp start
+
+# Limpiar Base
+DELETE FROM resultados_funcion_renal;
+ALTER TABLE resultados_funcion_renal AUTO_INCREMENT = 1;

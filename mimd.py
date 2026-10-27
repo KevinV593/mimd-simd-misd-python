@@ -1,12 +1,14 @@
 # LIBRERÍAS
-import csv
 import threading
 import time
-# BD
+
 import mysql.connector
 from conexion import conectar_mysql
 
-# ARREGLOS PARA EXTRAER DATASET
+import csv
+DATASET = "dataset_funcion_renal.csv"
+
+# ARREGLOS PARA EXTRAER DATOS DEL DATASET
 id = []
 nombre = []
 apellido = []
@@ -17,7 +19,7 @@ creatinina_mg_dl = []
 urea_mg_dl = []
 
 # LEER DATASET
-with open("dataset_funcion_renal.csv", "r", # -> Permisos de Lectura
+with open(DATASET, "r", # -> Permisos de Lectura
           encoding="utf-8-sig", newline="") as archivo:
     lector = csv.reader(archivo)
     next(lector)    # Salta encabezado
@@ -30,13 +32,14 @@ with open("dataset_funcion_renal.csv", "r", # -> Permisos de Lectura
         altura_cm.append(float (fila[5]))
         creatinina_mg_dl.append(float (fila[6]))
         urea_mg_dl.append(float (fila[7]))
-        
+
+# VERIFICAR NUM REGISTROS
 if len(id) != 6000:
     raise ValueError(
         f"Se esperaban 6000 registros, pero se cargaron {len(id)}."
     )
     
-print("Datos Cargados Correctamente")
+print("Datos Cargados Correctamente!")
 print(f"Número de elementos cargados: {len(id)}")
 
 # ARREGLOS PARA RESULTADOS
@@ -45,7 +48,17 @@ tfge_ml_min_1_73_m2 = [0.0] * len(id)
 creatinina_umol_l = [0.0] * len(id)
 urea_mmol_l = [0.0] * len(id)
 
-# FUNCIONES CON RANGOS
+# LIMITES DE LOS HILOS
+inicio_h1 = 0
+final_h1 = 2000
+
+inicio_h2 = 2000
+final_h2 = 4000
+
+inicio_h3 = 4000
+final_h3 = 6000
+
+# FUNCIONES
 def calcular_tfge(inicio, fin):
     for i in range(inicio, fin):
         altura_m = altura_cm[i] / 100
@@ -92,27 +105,31 @@ def convertir_urea(inicio,fin):
 # HILOS
 hilo1 = threading.Thread(
     target = calcular_tfge,
-    args = (0, 2000)
+    args = (inicio_h1, final_h1)    #1 a 2000
 )
 hilo2 = threading.Thread(
     target=convertir_creatinina,
-    args= (2000, 4000)
+    args= (inicio_h2, final_h2)     #2001 a 4000
 )
 hilo3 = threading.Thread(
     target=convertir_urea,
-    args=(4000, 6000)    
+    args=(inicio_h3, final_h3)      #4001 a 6000
 )
 
+# INICIA MEDICIÓN DE TIEMPO
 tiempo_inicio = time.perf_counter_ns()
 
+# INICIAN HILOS
 hilo1.start()
 hilo2.start()
 hilo3.start()
 
+# ESPERA A QUE LOS 3 HILOS TERMINEN
 hilo1.join()
 hilo2.join()
 hilo3.join()
 
+# FINALIZA MEDICIÓN DE TIEMPO
 tiempo_fin = time.perf_counter_ns()
 tiempo_total = (tiempo_fin - tiempo_inicio) / 1000 # microsegundos
 
@@ -120,52 +137,52 @@ print("===================================================")
 print("ARQUITECTURA MIMD")
 print("===================================================\n")
 print(f"RESULTADOS HILO 1 (1 - 2000)\n")
-for i in range(0, 2000):
+for i in range(inicio_h1, final_h1):
     print("===================================================")
     print(f"Registro Nro. {id[i]}:")
     print(f"Nombre y Apellido: {nombre[i]} {apellido[i]}")
     print(f"Edad: {edad[i]}")
     print(f"Sexo: {sexo[i]}")
-    print(f"Altura: {altura_cm[i]}cm")
-    print(f"Creatina: {creatinina_mg_dl[i]}mg/dL")
-    print(f"Urea: {urea_mg_dl[i]}mg/dL")
+    print(f"Altura: {altura_cm[i]} cm")
+    print(f"Cretinina: {creatinina_mg_dl[i]} mg/dL")
+    print(f"Urea: {urea_mg_dl[i]} mg/dL")
     print(f"\n \t Función Renal => TFGe: {tfge_ml_min_1_73_m2[i]:.3f} ml/min/1.73 m2")
 
 print("===================================================\n")
 print(f"RESULTADOS HILO 2 (2001 - 4000)\n")
-for i in range(2000, 4000):
+for i in range(inicio_h2, final_h2):
     print("===================================================")
     print(f"Registro Nro. {id[i]}:")
     print(f"Nombre y Apellido: {nombre[i]} {apellido[i]}")
     print(f"Edad: {edad[i]}")
     print(f"Sexo: {sexo[i]}")
-    print(f"Altura: {altura_cm[i]}cm")
-    print(f"Creatina: {creatinina_mg_dl[i]}mg/dL")
-    print(f"Urea: {urea_mg_dl[i]}mg/dL")
+    print(f"Altura: {altura_cm[i]} cm")
+    print(f"Creatinina: {creatinina_mg_dl[i]} mg/dL")
+    print(f"Urea: {urea_mg_dl[i]} mg/dL")
     print(f"\n \t Función Renal => Creatinina: {creatinina_umol_l[i]:.3f} umol/L ")
     
 print("===================================================\n")
 print(f"RESULTADOS HILO 3 (4001 - 6000)\n")
-for i in range(4000, 6000):
+for i in range(inicio_h3, final_h3):
     print("===================================================")
     print(f"Registro Nro. {id[i]}:")
     print(f"Nombre y Apellido: {nombre[i]} {apellido[i]}")
     print(f"Edad: {edad[i]} ")
     print(f"Sexo: {sexo[i]} ")
-    print(f"Altura: {altura_cm[i]}cm")
-    print(f"Creatina: {creatinina_mg_dl[i]}mg/dL")
-    print(f"Urea: {urea_mg_dl[i]}mg/dL")
-    print(f"\n \t Función Renal => Urea: {urea_mmol_l[i]}mmol/L")
+    print(f"Altura: {altura_cm[i]} cm")
+    print(f"Creatinina: {creatinina_mg_dl[i]} mg/dL")
+    print(f"Urea: {urea_mg_dl[i]} mg/dL")
+    print(f"\n \t Función Renal => Urea: {urea_mmol_l[i]:.3f} mmol/L")
     
 print("===================================================")
-print("\n \t PRIMER REGISTRO:", id[0] )
+print("\t PRIMER REGISTRO:", id[0] )
 print("\t ULTIMO REGISTRO:", id[-1] )
 print("\t TOTAL REGISTROS:", len(id))
 
 print(f"\t TIEMPO: {tiempo_total:.4f} microsegundos.")
 print("===================================================")
 
-# SUBIR A BD
+# BASE DE DATOS
 conexion = None
 cursor = None
 
