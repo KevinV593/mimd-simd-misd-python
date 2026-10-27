@@ -23,6 +23,8 @@ CREATE TABLE `resultados_funcion_renal` (
     `tfge_ml_min_1_73_m2` DOUBLE NULL,
     `creatinina_umol_l` DOUBLE NULL,
     `urea_mmol_l` DOUBLE NULL
+    `tiempo_microsegundos` DOUBLE NOT NULL,
+    `fecha_procesamiento` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 );
 
 -- RELACIÓN ENTRE LAS TABLAS

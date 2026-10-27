@@ -30,7 +30,12 @@ with open("dataset_funcion_renal.csv", "r", # -> Permisos de Lectura
         altura_cm.append(float (fila[5]))
         creatinina_mg_dl.append(float (fila[6]))
         urea_mg_dl.append(float (fila[7]))
-
+        
+if len(id) != 6000:
+    raise ValueError(
+        f"Se esperaban 6000 registros, pero se cargaron {len(id)}."
+    )
+    
 print("Datos Cargados Correctamente")
 print(f"Número de elementos cargados: {len(id)}")
 
@@ -109,7 +114,7 @@ hilo2.join()
 hilo3.join()
 
 tiempo_fin = time.perf_counter_ns()
-tiempo_total = (tiempo_fin - tiempo_inicio) / 1000000 #milisengundos
+tiempo_total = (tiempo_fin - tiempo_inicio) / 1000 # microsegundos
 
 print("===================================================")
 print("ARQUITECTURA MIMD")
@@ -157,5 +162,88 @@ print("\n \t PRIMER REGISTRO:", id[0] )
 print("\t ULTIMO REGISTRO:", id[-1] )
 print("\t TOTAL REGISTROS:", len(id))
 
-print(f"\t TIEMPO: {tiempo_total:.4f} ms.")
+print(f"\t TIEMPO: {tiempo_total:.4f} microsegundos.")
 print("===================================================")
+
+# SUBIR A BD
+conexion = None
+cursor = None
+
+try:
+    conexion = conectar_mysql()
+    cursor = conexion.cursor()
+    
+    # SQL SCRIPTS
+    sql_original= """
+        INSERT INTO registros_pacientes (
+            id,
+            nombre,
+            apellido,
+            edad,
+            sexo,
+            altura_cm,
+            creatinina_mg_dl,
+            urea_mg_dl
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE
+            nombre = VALUES(nombre),
+            apellido = VALUES(apellido),
+            edad = VALUES(edad),
+            sexo = VALUES(sexo),
+            altura_cm = VALUES(altura_cm),
+            creatinina_mg_dl = VALUES(creatinina_mg_dl),
+            urea_mg_dl = VALUES(urea_mg_dl);
+    """
+    sql_resultado="""
+        INSERT INTO resultados_funcion_renal (
+            registro_id,
+            arquitectura,
+            tfge_ml_min_1_73_m2,
+            creatinina_umol_l,
+            urea_mmol_l,
+            tiempo_microsegundos
+        )
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """
+    # INSERTAR REGISTROS Y RESULTADOS
+    for i in range(len(id)):
+        cursor.execute(sql_original, (
+            id[i],
+            nombre[i],
+            apellido[i],
+            edad[i],
+            sexo[i],
+            altura_cm[i],
+            creatinina_mg_dl[i],
+            urea_mg_dl[i]
+        ))
+        cursor.execute(sql_resultado, (
+            id[i],
+            arquitectura,
+            tfge_ml_min_1_73_m2[i],
+            creatinina_umol_l[i],
+            urea_mmol_l[i],
+            tiempo_total
+        ))
+        
+    # ALMACENAMIENTO DE DATOS
+    conexion.commit()
+
+    print("\n¡Datos guardados!")
+    print(f"Registros procesados: {len(id)}")
+    print(f"Arquitectura: {arquitectura}")
+
+# VALIDACIONES
+except mysql.connector.Error as error:
+    if conexion is not None and conexion.is_connected():
+        conexion.rollback()
+
+    print(f"Error al guardar datos: {error}")
+
+finally:
+    if cursor is not None:
+        cursor.close()
+
+    if conexion is not None and conexion.is_connected():
+        conexion.close()
