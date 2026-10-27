@@ -172,7 +172,7 @@ cursor = None
 try:
     conexion = conectar_mysql()
     cursor = conexion.cursor()
-    
+    print(f"Conexión Exitosa a la BD")
     # SQL SCRIPTS
     sql_original= """
         INSERT INTO registros_pacientes (
