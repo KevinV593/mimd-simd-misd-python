@@ -18,7 +18,7 @@ Urea: 58.4 mg/dL
  	 Función Renal => TFGe: 99.030 ml/min/1.73 m2
 ===================================================
 Registro Nro. 2:
-Nombre y Apellido: Valentina Aguilar
+Nombre y Apellido: Gabriela Epumer
 Edad: 29
 Sexo: F
 Altura: 175.7 cm
@@ -28,7 +28,7 @@ Urea: 45.1 mg/dL
  	 Función Renal => TFGe: 42.267 ml/min/1.73 m2
 ===================================================
 Registro Nro. 3:
-Nombre y Apellido: Esteban Rojas
+Nombre y Apellido: Nito Mestre
 Edad: 38
 Sexo: M
 Altura: 175.5 cm
@@ -60018,7 +60018,7 @@ Urea: 23.6 mg/dL
 	 PRIMER REGISTRO: 1
 	 ULTIMO REGISTRO: 6000
 	 TOTAL REGISTROS: 6000
-	 TIEMPO: 2181.2140 microsegundos.
+	 TIEMPO: 4473.7460 microsegundos.
 ===================================================
 Conexión Exitosa a la BD
 
