@@ -60,9 +60,12 @@ Ver: [dataset_funcion_renal.csv](dataset_funcion_renal.csv)
 
 
 # EJECTUAR
+python misd.py > salida_misd.txt
 python mimd.py > salida_mimd.txt
+python simd.py > salida_simd.txt
+
 sudo /opt/lampp/lampp start
-python -m streamlit run dashboard_funcion_renal_mejorado.py
+python -m streamlit run dashboard.py
 
 # Limpiar Base
 DELETE FROM resultados_funcion_renal;
