@@ -60,13 +60,19 @@ Ver: [dataset_funcion_renal.csv](dataset_funcion_renal.csv)
 
 
 # EJECTUAR
-python misd.py > salida_misd.txt
+
+1. INICIAR XAMP (terminal)
+sudo /opt/lampp/lampp start
+sudo /opt/lampp/lampp status
+
+2. EJECUTAR LAS 3 ARQUITECTURAS (terminal)
+python misd.py > salida_misd.txt 
 python mimd.py > salida_mimd.txt
 python simd.py > salida_simd.txt
 
-sudo /opt/lampp/lampp start
+3. DASHBORD (terminal)
 python -m streamlit run dashboard.py
 
-# Limpiar Base
+4. Vacias Dashbord (sql en phpMyAdmin)
 DELETE FROM resultados_funcion_renal;
 ALTER TABLE resultados_funcion_renal AUTO_INCREMENT = 1;
