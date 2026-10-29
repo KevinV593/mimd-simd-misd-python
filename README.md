@@ -353,17 +353,6 @@ La estructura básica documentada del repositorio es la siguiente:
 | `dashboard.py` | Aplicación visual desarrollada con Streamlit |
 ---
 
-## ⚠️ Consideraciones importantes
-
-- **Precisión matemática:** verifica que las fórmulas estén implementadas con las constantes y los exponentes correctos.
-- **Unidades:** comprueba que los valores de entrada y salida utilicen las unidades correspondientes.
-- **Población:** selecciona las ecuaciones de TFGe según la población para la que estén indicadas.
-- **Base de datos:** verifica la conexión, los permisos y la estructura de las tablas.
-- **Resultados:** contrasta los cálculos con ejemplos de prueba conocidos.
-- **Privacidad:** no publiques datos personales o clínicos identificables en el repositorio.
-- **Finalidad:** este proyecto tiene un propósito académico y no sustituye el diagnóstico ni la valoración de un profesional sanitario.
-
----
 
 <p align="center">
   <strong>PROYECTO DE COMPUTACIÓN PARALELA · OPCIÓN 4</strong>
