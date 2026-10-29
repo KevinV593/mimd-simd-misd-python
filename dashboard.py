@@ -366,56 +366,177 @@ with col_sexo:
 
 
 # ============================================================
-# 8. ANÁLISIS DE TIEMPOS
+# 8. ANÁLISIS DE TIEMPOS DE EJECUCIÓN
 # ============================================================
 
-st.subheader("Tiempos de procesamiento por arquitectura")
+st.subheader("⏱️ Tiempo de ejecución por arquitectura")
+
+st.caption(
+    "El tiempo representa la ejecución de cada arquitectura sobre el conjunto "
+    "de procesamiento. No corresponde al tiempo individual de cada paciente."
+)
+
+# ------------------------------------------------------------
+# Preparar tiempos
+# ------------------------------------------------------------
 
 tiempos = filtrados[
-    ["arquitectura", "tiempo_microsegundos"]
-].dropna()
+    ["arquitectura", "tiempo_microsegundos", "fecha_procesamiento"]
+].dropna(subset=["arquitectura", "tiempo_microsegundos"])
 
 tiempos["tiempo_microsegundos"] = pd.to_numeric(
-    tiempos["tiempo_microsegundos"], errors="coerce"
+    tiempos["tiempo_microsegundos"],
+    errors="coerce"
 )
+
 tiempos = tiempos[
     tiempos["tiempo_microsegundos"] >= 0
-].drop_duplicates(
-    subset=["arquitectura", "tiempo_microsegundos"]
-)
+].copy()
+
 
 if tiempos.empty:
-    st.info("No hay tiempos válidos almacenados para los filtros actuales.")
+
+    st.info(
+        "No hay tiempos de ejecución válidos para los filtros actuales."
+    )
+
 else:
-    fig_tiempos = px.box(
-        tiempos,
+
+    # --------------------------------------------------------
+    # Identificar ejecuciones
+    # --------------------------------------------------------
+    #
+    # Se asume que las filas pertenecientes a una misma ejecución
+    # comparten arquitectura, fecha de procesamiento y tiempo.
+    #
+
+    ejecuciones = (
+        tiempos
+        .groupby(
+            ["arquitectura", "fecha_procesamiento"],
+            dropna=False,
+            as_index=False
+        )
+        .agg(
+            tiempo_ejecucion_us=("tiempo_microsegundos", "first")
+        )
+    )
+
+    # --------------------------------------------------------
+    # Resumen por arquitectura
+    # --------------------------------------------------------
+
+    resumen_tiempos = (
+        ejecuciones
+        .groupby("arquitectura", as_index=False)
+        .agg(
+            ejecuciones=("tiempo_ejecucion_us", "count"),
+            tiempo_promedio_us=("tiempo_ejecucion_us", "mean"),
+            tiempo_mediano_us=("tiempo_ejecucion_us", "median"),
+            tiempo_minimo_us=("tiempo_ejecucion_us", "min"),
+            tiempo_maximo_us=("tiempo_ejecucion_us", "max")
+        )
+    )
+
+    # ========================================================
+    # GRÁFICO 1: COMPARACIÓN PRINCIPAL
+    # ========================================================
+
+    fig_comparacion = px.bar(
+        resumen_tiempos,
         x="arquitectura",
-        y="tiempo_microsegundos",
-        color="arquitectura",
-        points="all",
+        y="tiempo_promedio_us",
+        text_auto=".2f",
         labels={
             "arquitectura": "Arquitectura",
-            "tiempo_microsegundos": "Tiempo almacenado (µs)",
+            "tiempo_promedio_us": "Tiempo promedio (µs)"
         },
-        title="Distribución de los valores de tiempo distintos guardados",
+        title="Tiempo promedio de ejecución por arquitectura"
     )
-    fig_tiempos.update_layout(
-        showlegend=False,
+
+    fig_comparacion.update_traces(
+        hovertemplate=(
+            "<b>%{x}</b><br>"
+            "Tiempo promedio: %{y:.2f} µs"
+            "<extra></extra>"
+        )
+    )
+
+    fig_comparacion.update_layout(
         xaxis_title="Arquitectura",
-        yaxis_title="Tiempo (microsegundos)",
-        margin=dict(l=20, r=20, t=60, b=20),
+        yaxis_title="Tiempo de ejecución (µs)",
+        margin=dict(l=20, r=20, t=60, b=20)
     )
-    st.plotly_chart(fig_tiempos, use_container_width=True)
 
-st.warning(
-    "Limitación de la base de datos: el tiempo total de una ejecución se "
-    "guarda repetido en las filas de resultados y no existe una columna "
-    "identificadora de ejecución. El gráfico elimina tiempos exactamente "
-    "repetidos por arquitectura para reducir duplicaciones, pero no puede "
-    "reconstruir con certeza cada ejecución ni sustituye una medición "
-    "experimental registrada por separado."
-)
+    st.plotly_chart(
+        fig_comparacion,
+        use_container_width=True
+    )
 
+    # ========================================================
+    # GRÁFICO 2: EJECUCIONES INDIVIDUALES
+    # ========================================================
+
+    if len(ejecuciones) > len(resumen_tiempos):
+
+        st.markdown("### Variación entre ejecuciones")
+
+        fig_ejecuciones = px.scatter(
+            ejecuciones,
+            x="arquitectura",
+            y="tiempo_ejecucion_us",
+            color="arquitectura",
+            hover_data={
+                "arquitectura": True,
+                "fecha_procesamiento": True,
+                "tiempo_ejecucion_us": ":.2f"
+            },
+            labels={
+                "arquitectura": "Arquitectura",
+                "tiempo_ejecucion_us": "Tiempo de ejecución (µs)",
+                "fecha_procesamiento": "Fecha de ejecución"
+            },
+            title="Tiempo registrado en cada ejecución de la arquitectura"
+        )
+
+        fig_ejecuciones.update_layout(
+            showlegend=False,
+            xaxis_title="Arquitectura",
+            yaxis_title="Tiempo de ejecución (µs)",
+            margin=dict(l=20, r=20, t=60, b=20)
+        )
+
+        st.plotly_chart(
+            fig_ejecuciones,
+            use_container_width=True
+        )
+
+
+
+    # ========================================================
+    # INTERPRETACIÓN
+    # ========================================================
+
+    arquitectura_rapida = resumen_tiempos.loc[
+        resumen_tiempos["tiempo_promedio_us"].idxmin(),
+        "arquitectura"
+    ]
+
+    tiempo_rapido = resumen_tiempos[
+        "tiempo_promedio_us"
+    ].min()
+
+    st.success(
+        f"La arquitectura con menor tiempo promedio de ejecución es "
+        f"**{arquitectura_rapida}**, con aproximadamente "
+        f"**{tiempo_rapido:.2f} µs**."
+    )
+
+    st.info(
+        "La comparación se realiza a nivel de ejecución de arquitectura. "
+        "Los registros de pacientes no se interpretan como ejecuciones "
+        "independientes."
+    )
 
 # ============================================================
 # 9. TABLA Y DESCARGA

@@ -237,8 +237,6 @@ Antes de ejecutar el proyecto, verifica que dispones de los siguientes component
 
 También deben estar disponibles los archivos Python, el dataset y las dependencias utilizadas.
 
-Si el repositorio contiene un archivo `requirements.txt`, instala las dependencias con:
-
 ```bash
 pip install -r requirements.txt
 ```
