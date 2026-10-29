@@ -16,7 +16,6 @@
 - [🚀 Instalación y ejecución](#-instalación-y-ejecución)
 - [🧹 Reiniciar los resultados](#-reiniciar-los-resultados)
 - [📁 Estructura del proyecto](#-estructura-del-proyecto)
-- [⚠️ Consideraciones](#️-consideraciones)
 
 ---
 
