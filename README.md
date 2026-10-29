@@ -1,24 +1,7 @@
 # 🧬 Evaluación de la Función Renal
 ### Computación Paralela con Arquitecturas MIMD, SIMD y MISD
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/cf8193a4-f0bb-416d-8419-9b7f541cadd0" alt="Presentación del proyecto" width="100%">
-</p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.x-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
-  <img src="https://img.shields.io/badge/Streamlit-Dashboard-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white" alt="Streamlit">
-  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL">
-  <img src="https://img.shields.io/badge/Computación%20Paralela-MIMD%20%7C%20SIMD%20%7C%20MISD-6C63FF?style=for-the-badge" alt="Computación paralela">
-</p>
-
-<p align="center">
-  <strong>PROYECTO DE COMPUTACIÓN PARALELA · OPCIÓN 4</strong>
-  <br>
-  Procesamiento, cálculo y visualización de indicadores de función renal mediante arquitecturas de computación paralela.
-</p>
-
----
 
 ## 📑 Tabla de contenidos
 
@@ -202,8 +185,6 @@ urea_mmol_l = urea_mg_dl / 6.006
 | Creatinina | mg/dL × 88.4 | μmol/L |
 | Urea | mg/dL ÷ 6.006 | mmol/L |
 
-> **Compatibilidad con GitHub:** las fórmulas de esta sección están escritas en texto normal y las implementaciones se muestran en bloques de código. No dependen de LaTeX, `$$`, `\boxed` ni `\mathrm`, por lo que no aparecerán comandos matemáticos sin interpretar.
-
 ---
 
 ## 🗄️ Base de datos
@@ -238,7 +219,7 @@ Streamlit mostrará en la terminal la dirección local de acceso a la aplicació
 
 El contenido visible, los indicadores, las tablas y los gráficos dependerán de las funcionalidades implementadas en `dashboard.py`.
 
-> **Recomendación:** añade una captura real del dashboard para mostrar visualmente los resultados del proyecto.
+
 
 ---
 
@@ -370,9 +351,6 @@ La estructura básica documentada del repositorio es la siguiente:
 | `mimd.py` | Implementación de la arquitectura MIMD |
 | `simd.py` | Implementación de la arquitectura SIMD |
 | `dashboard.py` | Aplicación visual desarrollada con Streamlit |
-
-Actualiza el árbol si el repositorio contiene otros módulos, archivos de configuración o carpetas adicionales.
-
 ---
 
 ## ⚠️ Consideraciones importantes
