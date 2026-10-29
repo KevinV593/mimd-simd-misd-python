@@ -60018,7 +60018,7 @@ Urea: 23.6 mg/dL
 	 PRIMER REGISTRO: 1
 	 ULTIMO REGISTRO: 6000
 	 TOTAL REGISTROS: 6000
-	 TIEMPO: 2167.6140 microsegundos.
+	 TIEMPO: 4720.6510 microsegundos.
 ===================================================
 Conexión Exitosa a la BD
 
