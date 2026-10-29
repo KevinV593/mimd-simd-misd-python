@@ -43,7 +43,7 @@ Este proyecto implementa diferentes arquitecturas de computación paralela media
 
 El sistema contempla el cálculo de indicadores bioquímicos, la conversión de unidades, el almacenamiento de resultados en una base de datos y su posterior visualización mediante un dashboard interactivo.
 
-La solución se centra en el estudio y la implementación de tres modelos de procesamiento: **MIMD, SIMD y MISD**, con el propósito de comprender sus características y analizar su aplicación al procesamiento de datos.
+Se estudian tres modelos de procesamiento: **MIMD, SIMD y MISD**, con el propósito de comprender sus características y analizar su aplicación al procesamiento de datos.
 
 ## 🎯 Objetivos
 
@@ -53,7 +53,7 @@ La solución se centra en el estudio y la implementación de tres modelos de pro
 - Realizar conversiones de unidades bioquímicas.
 - Almacenar los resultados en una base de datos.
 - Visualizar la información procesada mediante un dashboard.
-- Facilitar la comparación de los resultados generados por las distintas implementaciones.
+- Facilitar la comparación de los resultados de las distintas implementaciones.
 
 ---
 
@@ -65,7 +65,7 @@ Permite ejecutar múltiples instrucciones sobre diferentes conjuntos de datos. S
 
 ### 🟣 SIMD — Single Instruction, Multiple Data
 
-Aplica una misma instrucción a múltiples elementos de datos. Este modelo es útil para estudiar operaciones repetitivas y procesamiento de conjuntos de datos.
+Aplica una misma instrucción a múltiples elementos de datos. Este modelo es útil para estudiar operaciones repetitivas sobre conjuntos de datos.
 
 ### 🟠 MISD — Multiple Instruction, Single Data
 
@@ -75,27 +75,25 @@ Consiste en aplicar múltiples instrucciones o tratamientos sobre un mismo flujo
 
 | Arquitectura | Instrucciones | Datos | Característica principal |
 |---|---|---|---|
-| MIMD | Múltiples | Múltiples | Procesamiento independiente de tareas y datos |
-| SIMD | Una | Múltiples | Aplicación de una operación sobre varios datos |
-| MISD | Múltiples | Un flujo | Distintos tratamientos sobre un mismo flujo de datos |
+| MIMD | Múltiples | Múltiples | Procesamiento de tareas y datos independientes |
+| SIMD | Una | Múltiples | Una operación aplicada a varios datos |
+| MISD | Múltiples | Un flujo | Diferentes tratamientos sobre un mismo flujo de datos |
 
-> **Nota:** la tabla describe los modelos arquitectónicos. El grado real de paralelismo, la estrategia de ejecución y el rendimiento deben verificarse en el código de cada implementación.
+> La tabla describe los modelos arquitectónicos. El grado real de paralelismo y el rendimiento deben verificarse en el código de cada implementación.
 
 ---
 
 ## 🧪 Evaluación de la función renal
 
-La función renal puede evaluarse mediante indicadores bioquímicos y estimaciones de la tasa de filtración glomerular.
+La función renal puede estudiarse mediante indicadores bioquímicos y estimaciones de la tasa de filtración glomerular.
 
 ### Indicadores contemplados
 
 | Indicador | Descripción | Unidad |
 |---|---|---|
 | TFGe / eGFR | Tasa de filtración glomerular estimada | mL/min/1,73 m² |
-| Creatinina sérica | Marcador bioquímico empleado en la estimación de la función renal | mg/dL o μmol/L |
+| Creatinina sérica | Marcador bioquímico utilizado para estimar la función renal | mg/dL o μmol/L |
 | Urea | Parámetro bioquímico relacionado con la evaluación renal | mg/dL o mmol/L |
-
-Los cálculos y las conversiones deben realizarse utilizando las unidades correctas para garantizar la coherencia de los resultados.
 
 ---
 
@@ -109,129 +107,102 @@ Para adultos se contempla la ecuación CKD-EPI 2021 basada en creatinina.
 
 #### Ecuación CKD-EPI 2021
 
-La ecuación se expresa de la siguiente manera:
+La tasa de filtración glomerular estimada se calcula mediante la siguiente expresión:
 
-$$
-\mathrm{TFGe} =
-142 \times
-\min\left(\frac{Scr}{K},1\right)^{\alpha}
-\times
-\max\left(\frac{Scr}{K},1\right)^{-1.200}
-\times
-0.9938^{\mathrm{Edad}}
-\times F
-$$
+**TFGe = 142 × min(Scr/K, 1)^α × max(Scr/K, 1)^(-1.200) × 0.9938^Edad × F**
 
-Donde el factor correspondiente al sexo utilizado por la ecuación es:
+Donde:
 
-$$
-F =
-\begin{cases}
-1.012 & \text{si es mujer} \\
-1 & \text{si es hombre}
-\end{cases}
-$$
+- **Scr:** creatinina sérica en mg/dL.
+- **K:** constante que depende del sexo utilizado por la ecuación.
+- **α:** exponente que depende del sexo.
+- **Edad:** edad en años.
+- **min(x, 1):** valor mínimo entre x y 1.
+- **max(x, 1):** valor máximo entre x y 1.
+- **F:** factor de ajuste según el sexo utilizado por la ecuación.
 
-**Parámetros de la ecuación:**
+#### Parámetros de la ecuación
 
 | Parámetro | Mujeres | Hombres |
 |---|---:|---:|
 | K | 0.7 | 0.9 |
 | α | -0.241 | -0.302 |
+| F | 1.012 | 1 |
 
-**Variables y abreviaturas:**
-
-- `Scr`: creatinina sérica expresada en mg/dL.
-- `K`: constante utilizada por la ecuación según el sexo.
-- `α`: exponente utilizado por la ecuación según el sexo.
-- `Edad`: edad en años.
-- `min(x, 1)`: valor mínimo entre `x` y 1.
-- `max(x, 1)`: valor máximo entre `x` y 1.
-- `F`: factor de ajuste de 1.012 para mujeres y 1 para hombres.
-- **Resultado:** mL/min/1,73 m².
+**Unidad del resultado:** mL/min/1,73 m².
 
 #### Ecuación pediátrica: bedside Schwartz
 
-Para población pediátrica se contempla la ecuación bedside Schwartz:
+Para población pediátrica se contempla la siguiente expresión:
 
-$$
-\mathrm{TFGe} =
-41.3 \times
-\frac{\mathrm{Talla\ (m)}}{\mathrm{Creatinina\ (mg/dL)}}
-$$
+**TFGe = 41.3 × (Talla en metros / Creatinina en mg/dL)**
 
-**Variables:**
+| Variable | Descripción |
+|---|---|
+| Talla | Estatura en metros |
+| Creatinina | Creatinina sérica en mg/dL |
+| Resultado | mL/min/1,73 m² |
 
-- Talla: estatura en metros.
-- Creatinina: creatinina sérica en mg/dL.
-- Resultado: mL/min/1,73 m².
+La ecuación debe seleccionarse de acuerdo con la población para la que esté indicada.
 
-La ecuación que debe utilizarse depende de la población y de las condiciones clínicas para las que esté validada.
+### 2. Conversión de creatinina: mg/dL a μmol/L
 
-### 2. Conversión de creatinina
+Esta conversión permite expresar la concentración de creatinina en micromoles por litro.
 
-Para convertir creatinina de mg/dL a μmol/L, se multiplica el valor por el factor de conversión 88.4.
+#### Fórmula
 
-**Fórmula matemática:**
+**Creatinina en μmol/L = Creatinina en mg/dL × 88.4**
 
-$$
-\mathrm{Creatinina}_{\mu mol/L}
-=
-\mathrm{Creatinina}_{mg/dL}
-\times 88.4
-$$
-
-**Implementación en Python:**
+#### Implementación en Python
 
 ```python
 creatinina_umol = creatinina_mg_dl * 88.4
 ```
 
-**Ejemplo de conversión:**
+#### Ejemplo
 
-Si la creatinina es de 1.0 mg/dL:
+| Concepto | Valor |
+|---|---:|
+| Creatinina original | 1.0 mg/dL |
+| Factor de conversión | 88.4 |
+| Resultado convertido | 88.4 μmol/L |
 
-$$
-1.0 \times 88.4 = 88.4\ \mu mol/L
-$$
+**Cálculo:** 1.0 × 88.4 = 88.4 μmol/L.
 
-### 3. Conversión de urea
+### 3. Conversión de urea: mg/dL a mmol/L
 
-Para convertir urea de mg/dL a mmol/L, se divide el valor por el factor de conversión 6.006.
+Esta conversión permite expresar la concentración de urea en milimoles por litro.
 
-**Fórmula matemática:**
+#### Fórmula
 
-$$
-\mathrm{Urea}_{mmol/L}
-=
-\frac{\mathrm{Urea}_{mg/dL}}{6.006}
-$$
+**Urea en mmol/L = Urea en mg/dL ÷ 6.006**
 
-**Implementación en Python:**
+#### Implementación en Python
 
 ```python
 urea_mmol_l = urea_mg_dl / 6.006
 ```
 
-**Ejemplo de conversión:**
+#### Ejemplo
 
-Si la urea es de 30 mg/dL:
+| Concepto | Valor |
+|---|---:|
+| Urea original | 30 mg/dL |
+| Factor de conversión | 6.006 |
+| Resultado convertido | 4.995 mmol/L aproximadamente |
 
-$$
-\frac{30}{6.006}
-\approx 4.995\ \mathrm{mmol/L}
-$$
+**Cálculo:** 30 ÷ 6.006 ≈ 4.995 mmol/L.
 
-### 📋 Resumen de fórmulas
+### 📋 Resumen de fórmulas y conversiones
 
-| Operación | Fórmula | Unidad de salida |
+| Operación | Fórmula en texto | Unidad de salida |
 |---|---|---|
 | TFGe en adultos | Ecuación CKD-EPI 2021 | mL/min/1,73 m² |
-| TFGe pediátrica | Ecuación bedside Schwartz | mL/min/1,73 m² |
-| Conversión de creatinina | mg/dL × 88.4 | μmol/L |
-| Conversión de urea | mg/dL ÷ 6.006 | mmol/L |
+| TFGe pediátrica | 41.3 × (talla en m / creatinina en mg/dL) | mL/min/1,73 m² |
+| Creatinina | mg/dL × 88.4 | μmol/L |
+| Urea | mg/dL ÷ 6.006 | mmol/L |
 
-> **Importante:** la implementación de las ecuaciones debe respetar sus constantes, exponentes, unidades y población de aplicación. La TFGe es una estimación y no sustituye la valoración de un profesional sanitario.
+> **Compatibilidad con GitHub:** las fórmulas de esta sección están escritas en texto normal y las implementaciones se muestran en bloques de código. No dependen de LaTeX, `$$`, `\boxed` ni `\mathrm`, por lo que no aparecerán comandos matemáticos sin interpretar.
 
 ---
 
@@ -239,25 +210,23 @@ $$
 
 El proyecto utiliza un conjunto de datos en formato CSV como fuente de información.
 
-**Archivo de datos:**
-
-📄 [`dataset_funcion_renal.csv`](dataset_funcion_renal.csv)
+📄 **Dataset:** [`dataset_funcion_renal.csv`](dataset_funcion_renal.csv)
 
 La base de datos permite almacenar los resultados del procesamiento para su posterior consulta desde el dashboard.
 
 ### Tecnologías de almacenamiento
 
-- **MySQL/MariaDB:** almacenamiento de los resultados.
+- **MySQL/MariaDB:** almacenamiento de resultados.
 - **XAMPP:** entorno local para gestionar los servicios de base de datos.
-- **phpMyAdmin:** interfaz para administrar y consultar las tablas.
+- **phpMyAdmin:** administración de la base de datos y sus tablas.
 
-La conexión y el almacenamiento dependen de la configuración implementada en los archivos Python del proyecto.
+La conexión y el almacenamiento dependen de la configuración implementada en los archivos Python.
 
 ---
 
 ## 📊 Dashboard interactivo
 
-El proyecto incorpora un dashboard desarrollado con Streamlit para visualizar los resultados generados por el procesamiento.
+El proyecto incorpora un dashboard desarrollado con **Streamlit** para visualizar los resultados generados por el procesamiento.
 
 ### Ejecutar el dashboard
 
@@ -265,32 +234,30 @@ El proyecto incorpora un dashboard desarrollado con Streamlit para visualizar lo
 python -m streamlit run dashboard.py
 ```
 
-Al iniciar el servidor, Streamlit mostrará en la terminal la dirección local de acceso a la aplicación.
+Streamlit mostrará en la terminal la dirección local de acceso a la aplicación.
 
 El contenido visible, los indicadores, las tablas y los gráficos dependerán de las funcionalidades implementadas en `dashboard.py`.
 
-> **Recomendación visual:** añade aquí una captura real de tu dashboard para mostrar los resultados y mejorar la presentación del repositorio.
-
-<!-- Sustituye la línea siguiente por una captura real cuando esté disponible. -->
+> **Recomendación:** añade una captura real del dashboard para mostrar visualmente los resultados del proyecto.
 
 ---
 
 ## ⚙️ Requisitos previos
 
-Antes de ejecutar el proyecto, verifica que tienes instalados y configurados los siguientes componentes:
+Antes de ejecutar el proyecto, verifica que dispones de los siguientes componentes:
 
 | Requisito | Función |
 |---|---|
 | Python 3 | Ejecución de los programas |
-| XAMPP | Gestión del entorno local de base de datos |
+| XAMPP | Entorno local de servicios |
 | MySQL/MariaDB | Almacenamiento de resultados |
 | Streamlit | Visualización de datos |
 | phpMyAdmin | Administración de la base de datos |
-| Archivo CSV | Datos de entrada del proyecto |
+| Archivo CSV | Datos de entrada |
 
-También deben estar disponibles los archivos Python, el dataset y las dependencias utilizadas por la implementación.
+También deben estar disponibles los archivos Python, el dataset y las dependencias utilizadas.
 
-Si el repositorio contiene un archivo `requirements.txt`, puedes instalar las dependencias con:
+Si el repositorio contiene un archivo `requirements.txt`, instala las dependencias con:
 
 ```bash
 pip install -r requirements.txt
@@ -322,7 +289,7 @@ Verifica que el servicio de base de datos esté disponible y que las credenciale
 python misd.py > salida_misd.txt
 ```
 
-La salida estándar del programa se guardará en `salida_misd.txt`.
+La salida estándar se guardará en `salida_misd.txt`.
 
 ### Paso 3. Ejecutar la arquitectura MIMD
 
@@ -330,7 +297,7 @@ La salida estándar del programa se guardará en `salida_misd.txt`.
 python mimd.py > salida_mimd.txt
 ```
 
-La salida estándar del programa se guardará en `salida_mimd.txt`.
+La salida estándar se guardará en `salida_mimd.txt`.
 
 ### Paso 4. Ejecutar la arquitectura SIMD
 
@@ -338,7 +305,7 @@ La salida estándar del programa se guardará en `salida_mimd.txt`.
 python simd.py > salida_simd.txt
 ```
 
-La salida estándar del programa se guardará en `salida_simd.txt`.
+La salida estándar se guardará en `salida_simd.txt`.
 
 ### Paso 5. Iniciar el dashboard
 
@@ -356,13 +323,13 @@ Abre en el navegador la dirección local que Streamlit muestre en la terminal.
 4. Comprobar que los resultados se hayan almacenado correctamente.
 5. Iniciar el dashboard y revisar la información presentada.
 
-> **Nota:** los comandos de las tres arquitecturas se ejecutan por separado. El orden anterior es una recomendación operativa; el orden exacto dependerá de las dependencias y del flujo de datos de tu implementación.
+> Los comandos de las tres arquitecturas se ejecutan por separado. El orden exacto dependerá de las dependencias de la implementación.
 
 ---
 
 ## 🧹 Reiniciar los resultados
 
-Para eliminar los resultados anteriores y reiniciar el contador de registros, accede a phpMyAdmin, selecciona la base de datos del proyecto y ejecuta las siguientes instrucciones SQL:
+Para eliminar los resultados anteriores y reiniciar el contador de registros, accede a phpMyAdmin, selecciona la base de datos del proyecto y ejecuta:
 
 ```sql
 DELETE FROM resultados_funcion_renal;
@@ -375,7 +342,7 @@ ALTER TABLE resultados_funcion_renal AUTO_INCREMENT = 1;
 - `DELETE FROM`: elimina los registros existentes de la tabla.
 - `ALTER TABLE ... AUTO_INCREMENT = 1`: intenta restablecer el contador de identificadores automáticos.
 
-⚠️ **Advertencia:** la primera instrucción elimina los registros existentes. Realiza una copia de seguridad antes de ejecutarla si necesitas conservar los resultados. El reinicio del contador depende de la estructura de la tabla y de las condiciones de la base de datos.
+⚠️ **Advertencia:** la primera instrucción elimina los registros existentes. Realiza una copia de seguridad si necesitas conservar los resultados. El reinicio del contador depende de la estructura de la tabla y de las condiciones de la base de datos.
 
 ---
 
@@ -393,7 +360,7 @@ La estructura básica documentada del repositorio es la siguiente:
 └── dashboard.py
 ```
 
-**Descripción de los archivos:**
+### Descripción de los archivos
 
 | Archivo | Descripción |
 |---|---|
@@ -404,17 +371,17 @@ La estructura básica documentada del repositorio es la siguiente:
 | `simd.py` | Implementación de la arquitectura SIMD |
 | `dashboard.py` | Aplicación visual desarrollada con Streamlit |
 
-Este árbol debe actualizarse si el repositorio contiene otros módulos, archivos de configuración o carpetas adicionales.
+Actualiza el árbol si el repositorio contiene otros módulos, archivos de configuración o carpetas adicionales.
 
 ---
 
 ## ⚠️ Consideraciones importantes
 
-- **Precisión matemática:** verifica que las fórmulas se implementen con las constantes y los exponentes correctos.
-- **Unidades:** asegúrate de que los valores de entrada y salida utilicen las unidades correspondientes.
+- **Precisión matemática:** verifica que las fórmulas estén implementadas con las constantes y los exponentes correctos.
+- **Unidades:** comprueba que los valores de entrada y salida utilicen las unidades correspondientes.
 - **Población:** selecciona las ecuaciones de TFGe según la población para la que estén indicadas.
-- **Base de datos:** comprueba la conexión, los permisos y la estructura de las tablas.
-- **Resultados:** contrasta los resultados calculados con ejemplos de prueba conocidos.
+- **Base de datos:** verifica la conexión, los permisos y la estructura de las tablas.
+- **Resultados:** contrasta los cálculos con ejemplos de prueba conocidos.
 - **Privacidad:** no publiques datos personales o clínicos identificables en el repositorio.
 - **Finalidad:** este proyecto tiene un propósito académico y no sustituye el diagnóstico ni la valoración de un profesional sanitario.
 
