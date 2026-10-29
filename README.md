@@ -210,7 +210,7 @@ El proyecto incorpora un dashboard desarrollado con **Streamlit** para visualiza
 
 ### Ejecutar el dashboard
 
-```bash
+```bashstreamlit
 python -m streamlit run dashboard.py
 ```
 
