@@ -1,6 +1,6 @@
 # 🧬 Evaluación de la Función Renal
 ### Computación Paralela con Arquitecturas MIMD, SIMD y MISD
-
+Integrantes: Camila Amores & Kevin Vaca
 
 
 ## 📑 Tabla de contenidos
